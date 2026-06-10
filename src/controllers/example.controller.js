@@ -66,11 +66,11 @@ const login = async(req,res)=>{
   try {
     const db = getFirestore();
 
-    const { correo, password } = req.body;
+    const { user, password } = req.body;
 
     const snapshot = await db
       .collection('usuarios')
-      .where('correo', '==', correo)
+      .where('user', '==', user)
       .limit(1)
       .get();
 
