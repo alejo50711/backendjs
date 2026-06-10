@@ -64,6 +64,8 @@ const usuarios = async (req, res) => {
 
 const login = async(req,res)=>{
   try {
+    const db = getFirestore();
+
     const { correo, password } = req.body;
 
     const snapshot = await db
