@@ -23,21 +23,18 @@ const getById = (req, res, next) => {
 
 
 const pool = new Pool({
-  host: 'dpg-d8kp97egvqtc73fls090-a.oregon-postgres.render.com',
-  port: 5432,
-  database: 'bdpracticas_5l59',
-  user: 'bdpracticas_5l59_user',
-  password: 'FslpBss8Q4RNk03EVczEfpHpBCqED1Na',
-  ssl: {
-    rejectUnauthorized: false
-  }
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT || 5432,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: { rejectUnauthorized: false },
 });
 
 
-const usuarios  =async  (req, res) => {
-  const db = admin.firestore();
-  
+const usuarios = async (req, res) => {
   try {
+    const db = admin.firestore();
     const { nombre, apellido, role } = req.body;
 
     const docRef = await db.collection('usuarios').add({
