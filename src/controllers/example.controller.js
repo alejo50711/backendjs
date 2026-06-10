@@ -134,4 +134,4 @@ const tabla = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById, usuarios, tabla };
+module.exports = { getAll, getById, usuarios, tabla,login };
