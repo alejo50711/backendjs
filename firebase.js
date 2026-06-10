@@ -1,10 +1,6 @@
-const admin = require('firebase-admin');
-const serviceAccount = require('./firebase-key.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
+// Este archivo redirige a src/config/firebase.js
+// Las credenciales se leen desde la variable de entorno FIREBASE_KEY
+const admin = require('./src/config/firebase');
 const db = admin.firestore();
 
 module.exports = db;
