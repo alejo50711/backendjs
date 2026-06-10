@@ -39,6 +39,8 @@ const usuarios = async (req, res) => {
       nombre,
       apellido,
       role,
+      user,
+      password,
       fechaCreacion: new Date()
     });
 
@@ -55,6 +57,17 @@ const usuarios = async (req, res) => {
     });
   }
 };
+
+
+
+const login = async(req,res)=>{
+  try{
+    const {user,password}=req.body
+
+  }catch(e){
+
+  }
+}
 
 const tabla = async (req, res) => {
   try {
