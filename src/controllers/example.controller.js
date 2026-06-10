@@ -1,6 +1,7 @@
 const exampleService = require('../services/example.service');
 const { Pool } = require('pg');
 const { getFirestore } = require('../config/firebase');
+const bcrypt = require('bcrypt');
 
 const getAll = (req, res, next) => {
   try {
@@ -34,13 +35,14 @@ const usuarios = async (req, res) => {
   try {
     const db = getFirestore();
     const { nombre, apellido, role,user,password } = req.body;
+    const hash = await bcrypt.hash(password, 10);
 
     const docRef = await db.collection('usuarios').add({
       nombre,
       apellido,
       role,
       user,
-      password,
+      password:hash,
       fechaCreacion: new Date()
     });
 
@@ -61,11 +63,52 @@ const usuarios = async (req, res) => {
 
 
 const login = async(req,res)=>{
-  try{
-    const {user,password}=req.body
+  try {
+    const { correo, password } = req.body;
 
-  }catch(e){
+    const snapshot = await db
+      .collection('usuarios')
+      .where('correo', '==', correo)
+      .limit(1)
+      .get();
 
+    if (snapshot.empty) {
+      return res.status(401).json({
+        success: false,
+        mensaje: 'Correo o contraseña incorrectos'
+      });
+    }
+
+    const usuario = snapshot.docs[0];
+    const datos = usuario.data();
+
+    const coincide = await bcrypt.compare(
+      password,
+      datos.password
+    );
+
+    if (!coincide) {
+      return res.status(401).json({
+        success: false,
+        mensaje: 'Correo o contraseña incorrectos'
+      });
+    }
+
+    res.json({
+      success: true,
+      usuario: {
+        id: usuario.id,
+        nombre: datos.nombre,
+        correo: datos.correo
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
   }
 }
 
