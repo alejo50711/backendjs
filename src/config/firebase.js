@@ -1,8 +1,9 @@
-const admin = require('firebase-admin');
+const { initializeApp, getApps, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 const fs = require('fs');
 const path = require('path');
 
-if (!admin.apps.length) {
+if (!getApps().length) {
   let serviceAccount;
 
   if (process.env.FIREBASE_KEY) {
@@ -15,9 +16,9 @@ if (!admin.apps.length) {
     serviceAccount = JSON.parse(fs.readFileSync(localKey, 'utf8'));
   }
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+  initializeApp({
+    credential: cert(serviceAccount),
   });
 }
 
-module.exports = admin;
+module.exports = { getFirestore };

@@ -1,6 +1,6 @@
 const exampleService = require('../services/example.service');
 const { Pool } = require('pg');
-const admin = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 
 const getAll = (req, res, next) => {
   try {
@@ -21,7 +21,6 @@ const getById = (req, res, next) => {
   }
 };
 
-
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT || 5432,
@@ -31,10 +30,9 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-
 const usuarios = async (req, res) => {
   try {
-    const db = admin.firestore();
+    const db = getFirestore();
     const { nombre, apellido, role } = req.body;
 
     const docRef = await db.collection('usuarios').add({
@@ -51,7 +49,6 @@ const usuarios = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       success: false,
       error: error.message
@@ -59,10 +56,9 @@ const usuarios = async (req, res) => {
   }
 };
 
-
-const tabla = async (req,res)=>{
+const tabla = async (req, res) => {
   try {
-    const result = await pool.query('SELECT NOW()');
+    await pool.query('SELECT NOW()');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS usuario (
         id SERIAL PRIMARY KEY,
@@ -72,12 +68,9 @@ const tabla = async (req,res)=>{
         creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    res.json({
-      ok: true,
-    });    
+    res.json({ ok: true });
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       ok: false,
       error: error.message
@@ -85,4 +78,4 @@ const tabla = async (req,res)=>{
   }
 };
 
-module.exports = { getAll, getById,usuarios,tabla };
+module.exports = { getAll, getById, usuarios, tabla };
