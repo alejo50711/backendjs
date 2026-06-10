@@ -1,5 +1,6 @@
 const exampleService = require('../services/example.service');
 const { Pool } = require('pg');
+const admin = require('../config/firebase');
 
 const getAll = (req, res, next) => {
   try {
