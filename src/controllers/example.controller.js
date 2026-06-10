@@ -33,7 +33,7 @@ const pool = new Pool({
 const usuarios = async (req, res) => {
   try {
     const db = getFirestore();
-    const { nombre, apellido, role } = req.body;
+    const { nombre, apellido, role,user,password } = req.body;
 
     const docRef = await db.collection('usuarios').add({
       nombre,
