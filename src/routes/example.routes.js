@@ -9,6 +9,7 @@ const {
  
   usuarios,
   guests,
+  getInvitacionById,
 } = require('../controllers/example.controller');
 
 const router = Router();
@@ -21,6 +22,8 @@ router.post('/tabla',tabla);
 router.post('/personal',personal);
 router.post('/getpersonal',getpersonal);
 router.post('/invitadors',guests);
+router.post('/getinvitador',getInvitacionById);
+
 
 
 router.post ('/login',login)

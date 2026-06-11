@@ -130,6 +130,9 @@ const getpersonal = async (req, res) => {
 };
 
 
+
+
+
 const login = async(req,res)=>{
   try {
     const db = getFirestore();
@@ -261,4 +264,36 @@ const guests = async (req, res) => {
 
 
 
-module.exports = { getAll, getById, usuarios, tabla,login,personal,getpersonal,guests };
+const getInvitacionById = async (req, res) => {
+  try {
+    const db = getFirestore();
+
+    const { id } = req.params; // o req.body si quieres
+
+    const docRef = await db.collection('invitados').doc(id).get();
+
+    if (!docRef.exists) {
+      return res.status(404).json({
+        success: false,
+        message: "Documento no encontrado"
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: {
+        id: docRef.id,
+        ...docRef.data()
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+
+module.exports = { getAll, getById, usuarios, tabla,login,personal,getpersonal,guests,getInvitacionById };
