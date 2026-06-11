@@ -268,7 +268,7 @@ const getInvitacionById = async (req, res) => {
   try {
     const db = getFirestore();
 
-    const { id } = req.params; // o req.body si quieres
+    const { id } = req.body; // o req.body si quieres
 
     const docRef = await db.collection('invitados').doc(id).get();
 
