@@ -8,6 +8,7 @@ const {
   getpersonal,
  
   usuarios,
+  guests,
 } = require('../controllers/example.controller');
 
 const router = Router();
@@ -19,6 +20,8 @@ router.post('/usuarios',usuarios)
 router.post('/tabla',tabla);
 router.post('/personal',personal);
 router.post('/getpersonal',getpersonal);
+router.post('/invitadors',guests);
+
 
 router.post ('/login',login)
 module.exports = router;

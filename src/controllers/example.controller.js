@@ -205,4 +205,47 @@ const tabla = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById, usuarios, tabla,login,personal,getpersonal };
+const guestList = [
+  "Jesus", "Ayza", "Elena", "Gustavo", "Liliana", "Ayxin", "Edith", "Zury",
+  "Luis", "Carlos", "Ana", "Jorge padre", "Charly", "Angie", "Juan", "Marcos",
+  "Abuelo", "Angel", "Tia Mery", "Abigail", "Acompañante", "Jesus", "Adrynis", "Medi",
+  "Giuliana", "Rafha", "Angelo", "Abuela Juve", "Angelo A", "Tia Mayrelis", "Duait", "Madrina",
+  "Nono", "Tia Eva", "Eva Paola", "Padrino", "Eva felicia", "Tia Lala", "Ivan Artura", "Jovanny",
+  "Tia tita", "Sr. Virgilio", "Acompañante", "Sra. Silvia", "Ismariel", "Poti", "Karina", "Eli",
+  "Darling", "Tia Dinora", "Lepel", "Elite", "Luis", "Ibarra", "Victor", "Monica",
+  "Edmundo", "Marci", "Omar", "Gabo", "Ginna", "Chapel", "Martín", "Gaspar",
+  "Hally", "Sebas", "Kimberly", "Antonio", "Juan Abelardo", "Victor", "Elena", "Mainor",
+  "Jeffry", "Mainor Junior", "David", "Raiza", "Irving", "Sr.Carlos", "Sr. Roberto", "Elías",
+  "Pineda"
+];
+
+const guests =async (req,res)=>{
+  try {
+    const db = getFirestore();
+    const guestsCollection = db.collection('invitados');
+    guestList.forEach(name => {
+      // Ignorar strings vacíos por si acaso
+      if (!name || name.trim() === '') return;
+      const newGuestRef = guestsCollection.doc(); // Autogenera un ID único
+      batch.set(newGuestRef, {
+        nombre: name.trim(),
+        mensaje:'',
+        asistira: null, // Puedes dejar esto en nulo hasta que ellos confirmen (RSVP)
+        fechaRegistro: admin.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    // Ejecuta todas las inserciones juntas (batch es más rápido y económico en lecturas/escrituras)
+    await batch.commit();
+    res.status(200).json({
+      success: true,
+      message: `${guestList.length} invitados insertados correctamente en Firestore.`
+    });
+  } catch (error) {
+    console.error('Error insertando invitados:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+
+
+module.exports = { getAll, getById, usuarios, tabla,login,personal,getpersonal,guests };
