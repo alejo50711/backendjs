@@ -65,14 +65,14 @@ const personal = async (req, res) => {
   try {
     const db = getFirestore();
     const { nombre, apellido, role,user,password ,correo,idcreador} = req.body;
-    const hash = await bcrypt.hash(password, 10);
+    const hash2 = await bcrypt.hash(password, 10);
 
     const docRef = await db.collection('personal').add({
       nombre,
       apellido,
       role,
       user,
-      password:hash,
+      password:hash2,
       correo,
       idcreador,
       fechaCreacion: new Date()
@@ -92,7 +92,7 @@ const personal = async (req, res) => {
   }
 };
 
-const getpersonal = async(req,res)=>{
+const getpersonal = async (req, res) => {
   try {
     const db = getFirestore();
 
@@ -101,34 +101,34 @@ const getpersonal = async(req,res)=>{
     const snapshot = await db
       .collection('personal')
       .where('idcreador', '==', id)
-      .limit(1)
       .get();
 
     if (snapshot.empty) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
-        mensaje: 'empleador no tiene trabajadores'
+        mensaje: 'El empleador no tiene trabajadores'
       });
     }
 
-  
-
-   
+    const data = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
     res.json({
       success: true,
-     data:snapshot
+      data
     });
 
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
+      success: false,
       error: error.message
     });
   }
-}
-
+};
 
 
 const login = async(req,res)=>{
