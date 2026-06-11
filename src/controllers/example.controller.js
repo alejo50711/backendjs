@@ -61,6 +61,74 @@ const usuarios = async (req, res) => {
 };
 
 
+const personal = async (req, res) => {
+  try {
+    const db = getFirestore();
+    const { nombre, apellido, role,user,password ,correo} = req.body;
+    const hash = await bcrypt.hash(password, 10);
+
+    const docRef = await db.collection('usuarios').add({
+      nombre,
+      apellido,
+      role,
+      user,
+      password:hash,
+      correo,
+      fechaCreacion: new Date()
+    });
+
+    res.status(201).json({
+      success: true,
+      id: docRef.id
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+const getpersonal = async(req,res)=>{
+  try {
+    const db = getFirestore();
+
+    const { id } = req.body;
+
+    const snapshot = await db
+      .collection('personal')
+      .where('idcreador', '==', id)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(401).json({
+        success: false,
+        mensaje: 'empleador no tiene trabajadores'
+      });
+    }
+
+  
+
+   
+
+    res.json({
+      success: true,
+     data:snapshot
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+  }
+}
+
+
 
 const login = async(req,res)=>{
   try {
@@ -136,4 +204,4 @@ const tabla = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById, usuarios, tabla,login };
+module.exports = { getAll, getById, usuarios, tabla,login,personal,getpersonal };
