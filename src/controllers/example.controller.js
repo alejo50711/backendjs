@@ -2,7 +2,6 @@ const exampleService = require('../services/example.service');
 const { Pool } = require('pg');
 const { getFirestore } = require('../config/firebase');
 const bcrypt = require('bcrypt');
-const admin = require("firebase-admin");
 const getAll = (req, res, next) => {
   try {
     const data = exampleService.getAll();
@@ -242,7 +241,6 @@ const guests = async (req, res) => {
         nombre: name.trim(),
         mensaje: '',
         asistira: null,
-        fechaRegistro: admin.firestore.FieldValue.serverTimestamp()
       });
     }
 
