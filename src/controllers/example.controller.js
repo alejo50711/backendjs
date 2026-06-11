@@ -64,16 +64,17 @@ const usuarios = async (req, res) => {
 const personal = async (req, res) => {
   try {
     const db = getFirestore();
-    const { nombre, apellido, role,user,password ,correo} = req.body;
+    const { nombre, apellido, role,user,password ,correo,idcreador} = req.body;
     const hash = await bcrypt.hash(password, 10);
 
-    const docRef = await db.collection('usuarios').add({
+    const docRef = await db.collection('personal').add({
       nombre,
       apellido,
       role,
       user,
       password:hash,
       correo,
+      idcreador,
       fechaCreacion: new Date()
     });
 
