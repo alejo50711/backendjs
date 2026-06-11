@@ -219,32 +219,47 @@ const guestList = [
   "Pineda"
 ];
 
-const guests =async (req,res)=>{
+
+const guests = async (req, res) => {
   try {
     const db = getFirestore();
+
+    const { guestList } = req.body;
+
+    if (!Array.isArray(guestList)) {
+      return res.status(400).json({
+        success: false,
+        message: "guestList debe ser un arreglo"
+      });
+    }
+
     const guestsCollection = db.collection('invitados');
-    guestList.forEach(name => {
-      // Ignorar strings vacíos por si acaso
-      if (!name || name.trim() === '') return;
-      const newGuestRef = guestsCollection.doc(); // Autogenera un ID único
-      batch.set(newGuestRef, {
+
+    for (const name of guestList) {
+      if (!name || name.trim() === '') continue;
+
+      await guestsCollection.add({
         nombre: name.trim(),
-        mensaje:'',
-        asistira: null, // Puedes dejar esto en nulo hasta que ellos confirmen (RSVP)
+        mensaje: '',
+        asistira: null,
         fechaRegistro: admin.firestore.FieldValue.serverTimestamp()
       });
-    });
-    // Ejecuta todas las inserciones juntas (batch es más rápido y económico en lecturas/escrituras)
-    await batch.commit();
+    }
+
     res.status(200).json({
       success: true,
       message: `${guestList.length} invitados insertados correctamente en Firestore.`
     });
+
   } catch (error) {
     console.error('Error insertando invitados:', error);
-    res.status(500).json({ success: false, error: error.message });
+
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
-}
+};
 
 
 
