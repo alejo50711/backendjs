@@ -172,6 +172,7 @@ const login = async(req,res)=>{
       usuario: {
         id: usuario.id,
         nombre: datos.nombre,
+        apellido:datos.apellido,
         correo: datos.correo
       }
     });
